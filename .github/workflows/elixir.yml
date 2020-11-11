@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MIX_ENV: test
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Elixir
@@ -29,4 +29,5 @@ jobs:
     - name: Install dependencies
       run: mix deps.get
     - name: Check test coverage
-      run: mix coveralls.github
+      run: mix coveralls.push --branch ${GITHUB_REF##*/} --sha ${GITHUB_SHA}"
+
