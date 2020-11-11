@@ -11,6 +11,6 @@ defmodule NeuronTest do
   end
 
   test "runs activation function" do
-    assert Neuron.run([0, 0, 0], [0, 0, 0], fn(x) -> :test end) == :test
+    assert Neuron.run([0, 0, 0], [0, 0, 0], fn(_) -> :test end) == :test
   end
 end
