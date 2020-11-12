@@ -1,4 +1,5 @@
 # Elixirnet
+[![Coverage Status](https://coveralls.io/repos/github/mjftw/elixirnet/badge.svg?branch=main)](https://coveralls.io/github/mjftw/elixirnet?branch=main)
 
 A convolutional neural network implementation written in Elixir.
 
