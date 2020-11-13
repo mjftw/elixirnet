@@ -2,7 +2,7 @@ defmodule Matrix do
   defstruct data: [], shape: {}
 
   # 1d Matrix
-  @spec at(Matrix, non_neg_integer) :: any
+  @spec at(%Matrix{}, non_neg_integer) :: any
   def at(%Matrix{shape: {shape_x}}, x)
       when x >= shape_x,
       do: raise("Matrix index out of bounds")
@@ -10,7 +10,7 @@ defmodule Matrix do
   def at(matrix, x), do: Enum.at(matrix.data, x)
 
   # 2d Matrix
-  @spec at(Matrix, non_neg_integer, non_neg_integer) :: any
+  @spec at(%Matrix{}, non_neg_integer, non_neg_integer) :: any
   def at(%Matrix{shape: {shape_x, shape_y}}, x, y)
       when x >= shape_x or y >= shape_y,
       do: raise("Matrix index out of bounds")
@@ -22,7 +22,7 @@ defmodule Matrix do
       when x >= shape_x or y >= shape_y or z >= shape_z,
       do: raise("Matrix index out of bounds")
 
-  @spec at(Matrix, non_neg_integer, non_neg_integer, non_neg_integer) :: any
+  @spec at(%Matrix{}, non_neg_integer, non_neg_integer, non_neg_integer) :: any
   def at(matrix, x, y, z),
     do:
       Enum.at(
@@ -31,14 +31,14 @@ defmodule Matrix do
       )
 
   # new
-  @spec new(non_neg_integer, any) :: Matrix.t()
+  @spec new(non_neg_integer, any) :: %Matrix{}
   def new(shape_x, value), do: %Matrix{data: List.duplicate(value, shape_x), shape: {shape_x}}
 
-  @spec new(integer, integer, any) :: Matrix.t()
+  @spec new(integer, integer, any) :: %Matrix{}
   def new(shape_x, shape_y, value),
     do: %Matrix{data: List.duplicate(value, shape_x * shape_y), shape: {shape_x, shape_y}}
 
-  @spec new(integer, integer, integer, any) :: Matrix.t()
+  @spec new(integer, integer, integer, any) :: %Matrix{}
   def new(shape_x, shape_y, shape_z, value),
     do: %Matrix{
       data: List.duplicate(value, shape_x * shape_y * shape_z),
@@ -46,22 +46,22 @@ defmodule Matrix do
     }
 
   # zeros
-  @spec zeros(non_neg_integer) :: Matrix.t()
+  @spec zeros(non_neg_integer) :: %Matrix{}
   def zeros(shape_x), do: new(shape_x, 0)
 
-  @spec zeros(non_neg_integer, non_neg_integer) :: Matrix.t()
+  @spec zeros(non_neg_integer, non_neg_integer) :: %Matrix{}
   def zeros(shape_x, shape_y), do: new(shape_x, shape_y, 0)
 
-  @spec zeros(non_neg_integer, non_neg_integer, non_neg_integer) :: Matrix.t()
+  @spec zeros(non_neg_integer, non_neg_integer, non_neg_integer) :: %Matrix{}
   def zeros(shape_x, shape_y, shape_z), do: new(shape_x, shape_y, shape_z, 0)
 
   # ones
-  @spec ones(non_neg_integer) :: Matrix.t()
+  @spec ones(non_neg_integer) :: %Matrix{}
   def ones(shape_x), do: new(shape_x, 1)
 
-  @spec ones(non_neg_integer, non_neg_integer) :: Matrix.t()
+  @spec ones(non_neg_integer, non_neg_integer) :: %Matrix{}
   def ones(shape_x, shape_y), do: new(shape_x, shape_y, 1)
 
-  @spec ones(non_neg_integer, non_neg_integer, non_neg_integer) :: Matrix.t()
+  @spec ones(non_neg_integer, non_neg_integer, non_neg_integer) :: %Matrix{}
   def ones(shape_x, shape_y, shape_z), do: new(shape_x, shape_y, shape_z, 1)
 end
