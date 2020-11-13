@@ -38,13 +38,4 @@ defmodule Convolution.Padding do
     |> Matrex.concat(input_col_padded, :rows)
     |> Matrex.concat(row_pad, :rows)
   end
-
-
-  @doc """
-  Pads the input with a reflection of the values directly opposite in the input.
-  """
-  @spec reflection(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
-  def reflection(input, kernel, stride) do
-    raise "Not implemented"
-  end
 end
