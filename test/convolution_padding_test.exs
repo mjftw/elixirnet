@@ -2,9 +2,13 @@ defmodule Convolution.Padding.PaddingTest do
   use ExUnit.Case
   import Convolution.Padding
 
-  test "none padding returns input" do
+  test "Padding.none/1 padding returns input" do
     m = Matrex.magic(5)
     assert none(m) == m
+  end
+  test "Padding.none/2 padding returns input" do
+    m = Matrex.magic(5)
+    assert none(m, :ignored) == m
   end
 
   test "Padding.constant/3 output is correct size for square input and filter" do
