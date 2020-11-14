@@ -1,5 +1,8 @@
 defmodule Convolution.Padding do
-  import Matrex
+  @moduledoc """
+    Adds functionality for adding padding to Matrex module matrices ready for
+    performing a convolution operation.
+  """
 
   @doc """
   No padding is applied. Also known as "valid" padding.
@@ -25,17 +28,34 @@ defmodule Convolution.Padding do
   def constant(input, kernel, value), do: constant(input, kernel, 1, value)
   @spec constant(Matrex.t(), Matrex.t(), non_neg_integer, number) :: Matrex.t()
   def constant(input, kernel, stride, value) do
-    row_pad_num = ceil(((stride - 1) * input[:rows] - stride + kernel[:rows]) / 2)
-    col_pad_num = ceil(((stride - 1) * input[:cols] - stride + kernel[:cols]) / 2)
+    col_pad = Matrex.fill(input[:rows], num_pad_cols(input, kernel, stride), value)
 
-    col_pad = Matrex.fill(input[:rows], col_pad_num, value)
-    input_col_padded = col_pad
-    |> Matrex.concat(input, :columns)
-    |> Matrex.concat(col_pad, :columns)
+    input_col_padded =
+      col_pad
+      |> Matrex.concat(input, :columns)
+      |> Matrex.concat(col_pad, :columns)
 
-    row_pad = Matrex.fill(row_pad_num, input_col_padded[:cols], value)
+    row_pad = Matrex.fill(num_pad_rows(input, kernel, stride), input_col_padded[:cols], value)
+
     row_pad
     |> Matrex.concat(input_col_padded, :rows)
     |> Matrex.concat(row_pad, :rows)
+  end
+
+  @doc """
+  Calculate amount of padding to be added on left and right of input for "same" padding
+  """
+  @spec constant(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
+  def num_pad_cols(input, kernel, stride), do: num_pad(input, kernel, stride, :cols)
+
+  @doc """
+  Calculate amount of padding to be added on top and bottome of input for "same" padding
+  """
+  @spec constant(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
+  def num_pad_rows(input, kernel, stride), do: num_pad(input, kernel, stride, :rows)
+
+  @spec constant(Matrex.t(), Matrex.t(), non_neg_integer, atom) :: Matrex.t()
+  defp num_pad(input, kernel, stride, axis_atom) do
+    ceil(((stride - 1) * input[axis_atom] - stride + kernel[axis_atom]) / 2)
   end
 end

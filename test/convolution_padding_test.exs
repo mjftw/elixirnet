@@ -11,6 +11,30 @@ defmodule Convolution.Padding.PaddingTest do
     assert none(m, :ignored) == m
   end
 
+  test "num_pad_cols/3 calculates correct padding amount - square filter, stride 0" do
+    assert num_pad_cols(Matrex.magic(10), Matrex.magic(5), 1) == 2
+  end
+
+  test "num_pad_cols/3 calculates correct padding amount - rect filter, stride 0" do
+    assert num_pad_cols(Matrex.random(10), Matrex.random(3, 7), 1) == 3
+  end
+
+  test "num_pad_cols/3 calculates correct padding amount - rect filter, stride 3" do
+    assert num_pad_cols(Matrex.random(10), Matrex.random(3, 7), 3) == 12
+  end
+
+  test "num_pad_rows/3 calculates correct padding amount - square filter, stride 0" do
+    assert num_pad_rows(Matrex.magic(10), Matrex.magic(5), 1) == 2
+  end
+
+  test "num_pad_rows/3 calculates correct padding amount - rect filter, stride 0" do
+    assert num_pad_rows(Matrex.random(10), Matrex.random(3, 7), 1) == 1
+  end
+
+  test "num_pad_rows/3 calculates correct padding amount - rect filter, stride 3" do
+    assert num_pad_rows(Matrex.random(10), Matrex.random(7, 5), 3) == 12
+  end
+
   test "Padding.constant/3 output is correct size for square input and filter" do
     assert constant(Matrex.magic(10), Matrex.magic(5), 0)[:size] == {14, 14}
   end
