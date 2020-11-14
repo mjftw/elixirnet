@@ -32,4 +32,11 @@ defmodule ConvolutionTest do
 
     assert Convolution.convolve(input, kernel, :same) == expected
   end
+
+  test "convolve/3 returns output with correct size on large matrices, same padding" do
+    input = Matrex.zeros(262, 191)
+    kernel = Matrex.zeros(19, 27)
+
+    Convolution.convolve(input, kernel, :same)[:size] == input[:size]
+  end
 end
