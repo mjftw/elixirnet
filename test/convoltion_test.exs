@@ -19,8 +19,8 @@ defmodule ConvolutionTest do
   end
 
   test "convolve/3 returns correct output with same padding, accending values" do
-    input  = 1..5 * 5 |> Enum.to_list |> Matrex.reshape(5, 5) |> IO.inspect()
-    kernel = 1..3 * 3 |> Enum.to_list |> Matrex.reshape(3, 3) |> IO.inspect()
+    input  = 1..5 * 5 |> Enum.to_list |> Matrex.reshape(5, 5)
+    kernel = 1..3 * 3 |> Enum.to_list |> Matrex.reshape(3, 3)
 
     expected = [
       128.0, 202.0, 241.0, 280.0, 184.0,

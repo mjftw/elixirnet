@@ -5,12 +5,12 @@ defmodule Convolution.Padding do
   """
 
   @doc """
-  No padding is applied. Also known as "valid" padding.
+  No padding is applied. Output sizes of convolution will be smaller than input
   """
-  @spec none(Matrex.t(), any) :: Matrex.t()
-  def none(input, _), do: none(input)
-  @spec none(Matrex.t()) :: Matrex.t()
-  def none(input), do: input
+  @spec valid(Matrex.t(), any) :: Matrex.t()
+  def valid(input, _), do: valid(input)
+  @spec valid(Matrex.t()) :: Matrex.t()
+  def valid(input), do: input
 
   @doc """
   Padding is applied to ensure the output of a convolution is the same size as
