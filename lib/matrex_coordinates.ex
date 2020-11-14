@@ -1,4 +1,7 @@
 defmodule Matrex.Coordinates do
+  @doc """
+  Get a list of tuples of x, y coordinates for a matrix.
+  """
   @spec coordinates(Matrex.t()) :: [any]
   def coordinates(matrix) do
     matrix
@@ -6,6 +9,10 @@ defmodule Matrex.Coordinates do
     |> Enum.map(fn {_, idx} -> {div(idx, matrix[:cols]), rem(idx, matrix[:cols])} end)
   end
 
+  @doc """
+  Extract a submatrix, with the extraction centered at a given coordinate,
+  and with a given width and height.
+  """
   @spec submatrix_at(
           Matrex.t(),
           {non_neg_integer, non_neg_integer},
