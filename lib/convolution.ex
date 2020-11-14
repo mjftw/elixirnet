@@ -30,12 +30,9 @@ defmodule Convolution do
           row + Padding.num_pad_rows(input, kernel, 1),
           col + Padding.num_pad_cols(input, kernel, 1)}
         |> (fn coord -> Matrex.Extra.submatrix_at(input_padded, coord, kernel[:size]) end).()
-        |> IO.inspect()
         |> Matrex.multiply(kernel)
-        |> IO.inspect()
         |> Matrex.sum()
       end)
     |> Matrex.reshape(input[:rows], input[:cols])
-
   end
 end
