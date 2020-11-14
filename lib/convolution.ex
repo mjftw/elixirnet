@@ -25,7 +25,7 @@ defmodule Convolution do
     # Each dot product forms the new value for the output matrix.
     input
     |> Matrex.Extra.coordinates()
-    |> Enum.map(
+    |> Parallel.pmap(
       fn {row, col} -> {
           row + Padding.num_pad_rows(input, kernel, 1),
           col + Padding.num_pad_cols(input, kernel, 1)}
