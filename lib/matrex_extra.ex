@@ -1,4 +1,10 @@
-defmodule Matrex.Coordinates do
+defmodule Matrex.Extra do
+  @moduledoc """
+    This module adds additional functionality to the Matrex module.
+    It can be thought of as an extension to the module that adds some new
+    functions for working with matricies.
+  """
+
   @doc """
   Get a list of tuples of x, y coordinates for a matrix.
   """
