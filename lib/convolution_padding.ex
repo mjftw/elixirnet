@@ -14,12 +14,12 @@ defmodule Convolution.Padding do
 
   @doc """
   Padding is applied to ensure the output of a convolution is the same size as
-  the input by padding the input with zeros. Also known as "same" padding.
+  the input by padding the input with zeros. Also known as "zero" padding.
   """
-  @spec zero(Matrex.t(), Matrex.t()) :: Matrex.t()
-  def zero(input, kernel), do: constant(input, kernel, 1, 0)
-  @spec zero(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
-  def zero(input, kernel, stride), do: constant(input, kernel, stride, 0)
+  @spec same(Matrex.t(), Matrex.t()) :: Matrex.t()
+  def same(input, kernel), do: constant(input, kernel, 1, 0)
+  @spec same(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
+  def same(input, kernel, stride), do: constant(input, kernel, stride, 0)
 
   @doc """
   The same as "same" padding, except a given value is used for the padding.

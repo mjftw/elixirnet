@@ -69,16 +69,16 @@ defmodule Convolution.Padding.PaddingTest do
     assert Matrex.max(output) == 2 and Matrex.min(output) == 1
   end
 
-  test "Padding.zero/2 output is correct size" do
-    assert zero(Matrex.magic(10), Matrex.magic(5))[:size] == {14, 14}
+  test "Padding.same/2 output is correct size" do
+    assert same(Matrex.magic(10), Matrex.magic(5))[:size] == {14, 14}
   end
 
-  test "Padding.zero/3 output is correct size, stride 2" do
-    assert zero(Matrex.magic(10), Matrex.magic(5), 3)[:size] == {32, 32}
+  test "Padding.same/3 output is correct size, stride 2" do
+    assert same(Matrex.magic(10), Matrex.magic(5), 3)[:size] == {32, 32}
   end
 
-  test "Padding.zero/2 output is padded with all zeros" do
-    output = zero(Matrex.zeros(10), Matrex.zeros(5))
+  test "Padding.same/2 output is padded with all zeros" do
+    output = same(Matrex.zeros(10), Matrex.zeros(5))
     assert Matrex.max(output) == 0 and Matrex.min(output) == 0
   end
 end
