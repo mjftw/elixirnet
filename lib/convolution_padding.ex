@@ -5,14 +5,6 @@ defmodule Convolution.Padding do
   """
 
   @doc """
-  No padding is applied. Output sizes of convolution will be smaller than input
-  """
-  @spec valid(Matrex.t(), any) :: Matrex.t()
-  def valid(input, _), do: valid(input)
-  @spec valid(Matrex.t()) :: Matrex.t()
-  def valid(input), do: input
-
-  @doc """
   Padding is applied to ensure the output of a convolution is the same size as
   the input by padding the input with zeros. Also known as "zero" padding.
   """

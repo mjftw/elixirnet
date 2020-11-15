@@ -2,15 +2,6 @@ defmodule Convolution.Padding.PaddingTest do
   use ExUnit.Case
   import Convolution.Padding
 
-  test "Padding.valid/1 padding returns input" do
-    m = Matrex.magic(5)
-    assert valid(m) == m
-  end
-  test "Padding.valid/2 padding returns input" do
-    m = Matrex.magic(5)
-    assert valid(m, :ignored) == m
-  end
-
   test "num_pad_cols/3 calculates correct padding amount - square filter, stride 0" do
     assert num_pad_cols(Matrex.magic(10), Matrex.magic(5), 1) == 2
   end
