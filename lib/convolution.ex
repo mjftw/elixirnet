@@ -44,6 +44,23 @@ defmodule Convolution do
     end)
   end
 
+  @spec max_pool(Matrex.t(), Matrex.t(), non_neg_integer, conv_method) :: Matrex.t()
+  def max_pool(input, kernel, stride \\ 1, method \\ :valid) do
+    {input_padded, {row_offset, col_offset}, {output_rows, output_cols}} =
+      pad_input(input, kernel, stride, method)
+
+    Matrex.zeros(output_rows, output_cols)
+    |> Matrex.apply(fn _, row, col ->
+      Matrex.Extra.submatrix_at(
+        input_padded,
+        {(row - 1) * stride + row_offset, (col - 1) * stride + col_offset},
+        kernel[:size]
+      )
+      |> Matrex.max()
+    end)
+  end
+
+
   @typedoc """
   Tuple returned from the pad_input functions containing the padded matrix and additional info
   required to perform the convolution.
