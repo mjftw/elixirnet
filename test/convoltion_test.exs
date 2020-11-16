@@ -18,6 +18,50 @@ defmodule ConvolutionTest do
     assert convolve(input, kernel, :same) == expected
   end
 
+  test "convolve/3 returns output with correct size, :same padding, stride 2, ones" do
+    input  = Matrex.ones({3, 7})
+    kernel = Matrex.ones({3, 3})
+
+    assert convolve(input, kernel, 2, :same)[:size] == input[:size]
+  end
+
+  test "convolve/3 returns output with correct size, :same padding, stride 5, ones" do
+    input  = Matrex.ones({30, 18})
+    kernel = Matrex.ones({5, 3})
+
+    assert convolve(input, kernel, 5, :same)[:size] == input[:size]
+  end
+
+  test "convolve/3 returns correct output, :same padding, stride 2, ones" do
+    input  = Matrex.ones({5, 5})
+    kernel = Matrex.ones({3, 3})
+
+    expected = [
+      0, 0, 0, 0, 0,
+      0, 4, 6, 4, 0,
+      0, 6, 9, 6, 0,
+      0, 4, 6, 4, 0,
+      0, 0, 0, 0, 0
+    ] |> Matrex.reshape(5, 5)
+
+    assert convolve(input, kernel, 2, :same) == expected
+  end
+
+  test "convolve/3 returns correct output, :same padding, stride 2, accending" do
+    input  = 1..5 * 5 |> Enum.to_list |> Matrex.reshape(5, 5)
+    kernel = 1..3 * 3 |> Enum.to_list |> Matrex.reshape(3, 3)
+
+    expected = [
+      0,   0,   0,   0, 0,
+      0, 128, 241, 184, 0,
+      0, 441, 681, 453, 0,
+      0, 320, 457, 280, 0,
+      0,   0,   0,   0, 0
+    ] |> Matrex.reshape(5, 5)
+
+    assert convolve(input, kernel, 2, :same) == expected
+  end
+
   test "convolve/3 returns correct output with :same padding, accending values" do
     input  = 1..5 * 5 |> Enum.to_list |> Matrex.reshape(5, 5)
     kernel = 1..3 * 3 |> Enum.to_list |> Matrex.reshape(3, 3)
@@ -47,7 +91,7 @@ defmodule ConvolutionTest do
     assert convolve(input, kernel) == convolve(input, kernel, :valid)
   end
 
-  test "convolve/3 returns correct output with correct size with :valid padding, ones" do
+  test "convolve/3 returns output with correct size with :valid padding, ones" do
     input  = Matrex.ones({5, 5})
     kernel = Matrex.ones({3, 3})
 
@@ -72,6 +116,34 @@ defmodule ConvolutionTest do
     ] |> Matrex.reshape(3, 3)
 
     assert convolve(input, kernel, :valid) == expected
+  end
+
+  test "convolve/3 returns output with correct size with :valid padding, stride 2" do
+    input  = Matrex.ones({7, 9})
+    kernel = Matrex.ones({3, 1})
+
+    assert convolve(input, kernel, 2, :valid)[:size] == {3, 5}
+  end
+
+  test "convolve/3 returns correct output with :valid padding, stride 2" do
+    input  = Matrex.ones({7, 7})
+    kernel = Matrex.ones({3, 3})
+
+    assert convolve(input, kernel, 2, :valid) == Matrex.fill(3, 9)
+  end
+
+  test "convolve/3 returns output with correct size with :valid padding, stride 2, rectangle" do
+    input  = Matrex.ones({7, 7})
+    kernel = Matrex.ones({3, 3})
+
+    assert convolve(input, kernel, 2, :valid)[:size] == {3, 3}
+  end
+
+  test "convolve/3 returns output with smaller size with :valid padding when stride too high to fit cleanly" do
+    input  = Matrex.ones({7, 7})
+    kernel = Matrex.ones({3, 3})
+
+    assert convolve(input, kernel, 4, :valid)[:size] == {2, 2}
   end
 
 end

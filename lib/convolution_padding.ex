@@ -37,16 +37,16 @@ defmodule Convolution.Padding do
   @doc """
   Calculate amount of padding to be added on left and right of input for "same" padding
   """
-  @spec constant(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
+  @spec num_pad_cols(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
   def num_pad_cols(input, kernel, stride), do: num_pad(input, kernel, stride, :cols)
 
   @doc """
   Calculate amount of padding to be added on top and bottome of input for "same" padding
   """
-  @spec constant(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
+  @spec num_pad_rows(Matrex.t(), Matrex.t(), non_neg_integer) :: Matrex.t()
   def num_pad_rows(input, kernel, stride), do: num_pad(input, kernel, stride, :rows)
 
-  @spec constant(Matrex.t(), Matrex.t(), non_neg_integer, atom) :: Matrex.t()
+  @spec num_pad(Matrex.t(), Matrex.t(), non_neg_integer, atom) :: Matrex.t()
   defp num_pad(input, kernel, stride, axis_atom) do
     ceil(((stride - 1) * input[axis_atom] - stride + kernel[axis_atom]) / 2)
   end

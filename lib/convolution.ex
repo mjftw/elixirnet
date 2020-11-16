@@ -15,19 +15,19 @@ defmodule Convolution do
 
   @doc """
   Perform a sliding window style convoltion over an input matrix and a kernel matrix.
-  Uses "valid" padding method.
+  Uses "valid" padding method, with a stride of 1.
   """
   @spec convolve(Matrex.t(), Matrex.t()) :: Matrex.t()
-  def convolve(input, kernel), do: convolve(input, kernel, :valid)
+  def convolve(input, kernel), do: convolve(input, kernel, 1, :valid)
 
   @doc """
   Perform a sliding window style convoltion over an input matrix and a kernel matrix.
   Atom argument donotes what kind of padding should be applied during the convolution.
   """
-  @spec convolve(Matrex.t(), Matrex.t(), conv_method) :: Matrex.t()
-  def convolve(input, kernel, method) do
+  @spec convolve(Matrex.t(), Matrex.t(), non_neg_integer, conv_method) :: Matrex.t()
+  def convolve(input, kernel, stride \\ 1, method) do
     {input_padded, {row_offset, col_offset}, {output_rows, output_cols}} =
-      pad_input(input, kernel, 1, method)
+      pad_input(input, kernel, stride, method)
 
     # Slide a kernel sized window over the input matrix and perform dot product
     # between the windowed matrix section and the convolution kernel at each location.
@@ -36,7 +36,7 @@ defmodule Convolution do
     |> Matrex.apply(fn _, row, col ->
       Matrex.Extra.submatrix_at(
         input_padded,
-        {row + row_offset, col + col_offset},
+        {(row - 1) * stride + row_offset, (col - 1) * stride + col_offset},
         kernel[:size]
       )
       |> Matrex.multiply(kernel)
@@ -48,15 +48,16 @@ defmodule Convolution do
   Tuple returned from the pad_input functions containing the padded matrix and additional info
   required to perform the convolution.
   """
-  @type padding_return :: {Matrex.t(), {non_neg_integer, non_neg_integer}, {non_neg_integer, non_neg_integer}}
+  @type padding_return ::
+          {Matrex.t(), {non_neg_integer, non_neg_integer}, {non_neg_integer, non_neg_integer}}
 
   @spec pad_input(Matrex.t(), Matrex.t(), non_neg_integer, :valid) :: padding_return
   defp pad_input(input, kernel, stride, :valid) do
-    row_offset = ceil((kernel[:rows] - 1) / 2) - 1
-    col_offset = ceil((kernel[:cols] - 1) / 2) - 1
+    row_offset = ceil((kernel[:rows] - 1) / 2)
+    col_offset = ceil((kernel[:cols] - 1) / 2)
 
-    output_rows = input[:rows] - kernel[:rows] + 1
-    output_cols = input[:cols] - kernel[:cols] + 1
+    output_rows = floor((input[:rows] - kernel[:rows]) / stride) + 1
+    output_cols = floor((input[:cols] - kernel[:cols]) / stride) + 1
 
     {input, {row_offset, col_offset}, {output_rows, output_cols}}
   end
@@ -68,8 +69,8 @@ defmodule Convolution do
   defp pad_input(input, kernel, stride, :constant, value) do
     input_padded = Padding.constant(input, kernel, stride, value)
 
-    row_offset = Padding.num_pad_rows(input, kernel, 1) - 1
-    col_offset = Padding.num_pad_cols(input, kernel, 1) - 1
+    row_offset = Padding.num_pad_rows(input, kernel, 1)
+    col_offset = Padding.num_pad_cols(input, kernel, 1)
 
     {input_padded, {row_offset, col_offset}, {input[:rows], input[:cols]}}
   end
