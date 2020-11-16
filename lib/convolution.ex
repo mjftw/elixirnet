@@ -46,8 +46,8 @@ defmodule Convolution do
   end
 
   def convolve(input, kernel, :valid) do
-    row_offset = ceil((kernel[:rows] - 1) / 2)
-    col_offset = ceil((kernel[:cols] - 1) / 2)
+    row_offset = ceil((kernel[:rows] - 1) / 2) - 1
+    col_offset = ceil((kernel[:cols] - 1) / 2) - 1
 
     output_rows = input[:rows] - kernel[:rows] + 1
     output_cols = input[:cols] - kernel[:cols] + 1
@@ -59,7 +59,7 @@ defmodule Convolution do
     |> Matrex.apply(fn _, row, col ->
       Matrex.Extra.submatrix_at(
         input,
-        {row + row_offset - 1, col + col_offset - 1},
+        {row + row_offset, col + col_offset},
         kernel[:size]
       )
       |> Matrex.multiply(kernel)
