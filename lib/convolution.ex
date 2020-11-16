@@ -25,9 +25,23 @@ defmodule Convolution do
   Atom argument donotes what kind of padding should be applied during the convolution.
   """
   @spec convolve(Matrex.t(), Matrex.t(), non_neg_integer, conv_method) :: Matrex.t()
-  def convolve(input, kernel, stride \\ 1, method) do
+  def convolve(input, kernel, stride \\ 1, method),
+    do: apply_to_window(input, kernel, &sum_products/2, stride, method)
+
+  @spec max_pool(Matrex.t(), Matrex.t(), non_neg_integer, conv_method) :: Matrex.t()
+  def max_pool(input, kernel, stride \\ 1, method \\ :valid),
+    do: apply_to_window(input, kernel, fn m, _ -> Matrex.max(m) end, stride, method)
+
+  @spec apply_to_window(
+          Matrex.t(),
+          Matrex.t(),
+          (Matrex.t(), Matrex.t() -> number),
+          non_neg_integer,
+          conv_method
+        ) :: Matrex.t()
+  def apply_to_window(input, kernel, func, stride \\ 1, pad_method \\ :valid) do
     {input_padded, {row_offset, col_offset}, {output_rows, output_cols}} =
-      pad_input(input, kernel, stride, method)
+      pad_input(input, kernel, stride, pad_method)
 
     # Slide a kernel sized window over the input matrix and perform dot product
     # between the windowed matrix section and the convolution kernel at each location.
@@ -39,27 +53,16 @@ defmodule Convolution do
         {(row - 1) * stride + row_offset, (col - 1) * stride + col_offset},
         kernel[:size]
       )
-      |> Matrex.multiply(kernel)
-      |> Matrex.sum()
+      |> func.(kernel)
     end)
   end
 
-  @spec max_pool(Matrex.t(), Matrex.t(), non_neg_integer, conv_method) :: Matrex.t()
-  def max_pool(input, kernel, stride \\ 1, method \\ :valid) do
-    {input_padded, {row_offset, col_offset}, {output_rows, output_cols}} =
-      pad_input(input, kernel, stride, method)
-
-    Matrex.zeros(output_rows, output_cols)
-    |> Matrex.apply(fn _, row, col ->
-      Matrex.Extra.submatrix_at(
-        input_padded,
-        {(row - 1) * stride + row_offset, (col - 1) * stride + col_offset},
-        kernel[:size]
-      )
-      |> Matrex.max()
-    end)
+  @spec sum_products(Matrex.t(), Matrex.t()) :: number
+  defp sum_products(matrix1, matrix2) do
+    matrix1
+    |> Matrex.multiply(matrix2)
+    |> Matrex.sum()
   end
-
 
   @typedoc """
   Tuple returned from the pad_input functions containing the padded matrix and additional info
