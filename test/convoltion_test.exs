@@ -22,14 +22,14 @@ defmodule ConvolutionTest do
     input  = Matrex.ones({3, 7})
     kernel = Matrex.ones({3, 3})
 
-    assert convolve(input, kernel, 2, :same)[:size] == input[:size]
+    assert convolve(input, kernel, :same, 2)[:size] == input[:size]
   end
 
   test "convolve/4 returns output with correct size, :same padding, stride 5, ones" do
     input  = Matrex.ones({30, 18})
     kernel = Matrex.ones({5, 3})
 
-    assert convolve(input, kernel, 5, :same)[:size] == input[:size]
+    assert convolve(input, kernel, :same, 5)[:size] == input[:size]
   end
 
   test "convolve/3 returns correct output, :same padding, stride 2, ones" do
@@ -44,7 +44,7 @@ defmodule ConvolutionTest do
       0, 0, 0, 0, 0
     ] |> Matrex.reshape(5, 5)
 
-    assert convolve(input, kernel, 2, :same) == expected
+    assert convolve(input, kernel, :same, 2) == expected
   end
 
   test "convolve/3 returns correct output, :same padding, stride 2, accending" do
@@ -59,7 +59,7 @@ defmodule ConvolutionTest do
       0,   0,   0,   0, 0
     ] |> Matrex.reshape(5, 5)
 
-    assert convolve(input, kernel, 2, :same) == expected
+    assert convolve(input, kernel, :same, 2) == expected
   end
 
   test "convolve/3 returns correct output with :same padding, accending values" do
@@ -122,28 +122,28 @@ defmodule ConvolutionTest do
     input  = Matrex.ones({7, 9})
     kernel = Matrex.ones({3, 1})
 
-    assert convolve(input, kernel, 2, :valid)[:size] == {3, 5}
+    assert convolve(input, kernel, :valid, 2)[:size] == {3, 5}
   end
 
   test "convolve/4 returns correct output with :valid padding, stride 2" do
     input  = Matrex.ones({7, 7})
     kernel = Matrex.ones({3, 3})
 
-    assert convolve(input, kernel, 2, :valid) == Matrex.fill(3, 9)
+    assert convolve(input, kernel, :valid, 2) == Matrex.fill(3, 9)
   end
 
   test "convolve/4 returns output with correct size with :valid padding, stride 2, rectangle" do
     input  = Matrex.ones({7, 7})
     kernel = Matrex.ones({3, 3})
 
-    assert convolve(input, kernel, 2, :valid)[:size] == {3, 3}
+    assert convolve(input, kernel, :valid, 2)[:size] == {3, 3}
   end
 
   test "convolve/4 returns output with smaller size with :valid padding when stride too high to fit cleanly" do
     input  = Matrex.ones({7, 7})
     kernel = Matrex.ones({3, 3})
 
-    assert convolve(input, kernel, 4, :valid)[:size] == {2, 2}
+    assert convolve(input, kernel, :valid, 4)[:size] == {2, 2}
   end
 
   test "max_pool/2 returns correct output, accending values" do

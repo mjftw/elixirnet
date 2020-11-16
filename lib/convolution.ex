@@ -18,19 +18,19 @@ defmodule Convolution do
   Uses "valid" padding method, with a stride of 1.
   """
   @spec convolve(Matrex.t(), Matrex.t()) :: Matrex.t()
-  def convolve(input, kernel), do: convolve(input, kernel, 1, :valid)
+  def convolve(input, kernel), do: convolve(input, kernel, :valid)
 
   @doc """
   Perform a sliding window style convoltion over an input matrix and a kernel matrix.
   Atom argument donotes what kind of padding should be applied during the convolution.
   """
   @spec convolve(Matrex.t(), Matrex.t(), non_neg_integer, conv_method) :: Matrex.t()
-  def convolve(input, kernel, stride \\ 1, method),
-    do: apply_to_window(input, kernel, &sum_products/2, stride, method)
+  def convolve(input, kernel, method, stride \\ 1),
+    do: apply_to_window(input, kernel, &sum_products/2, method, stride)
 
   @spec max_pool(Matrex.t(), Matrex.t(), non_neg_integer, conv_method) :: Matrex.t()
-  def max_pool(input, kernel, stride \\ 1, method \\ :valid),
-    do: apply_to_window(input, kernel, fn m, _ -> Matrex.max(m) end, stride, method)
+  def max_pool(input, kernel, method \\ :valid, stride \\ 1),
+    do: apply_to_window(input, kernel, fn (m, _) -> Matrex.max(m) end, method, stride)
 
   @spec apply_to_window(
           Matrex.t(),
@@ -39,9 +39,9 @@ defmodule Convolution do
           non_neg_integer,
           conv_method
         ) :: Matrex.t()
-  def apply_to_window(input, kernel, func, stride \\ 1, pad_method \\ :valid) do
+  def apply_to_window(input, kernel, func, pad_method \\ :valid, stride \\ 1) do
     {input_padded, {row_offset, col_offset}, {output_rows, output_cols}} =
-      pad_input(input, kernel, stride, pad_method)
+      pad_input(input, kernel, pad_method, stride)
 
     # Slide a kernel sized window over the input matrix and perform dot product
     # between the windowed matrix section and the convolution kernel at each location.
@@ -71,8 +71,8 @@ defmodule Convolution do
   @type padding_return ::
           {Matrex.t(), {non_neg_integer, non_neg_integer}, {non_neg_integer, non_neg_integer}}
 
-  @spec pad_input(Matrex.t(), Matrex.t(), non_neg_integer, :valid) :: padding_return
-  defp pad_input(input, kernel, stride, :valid) do
+  @spec pad_input(Matrex.t(), Matrex.t(), :valid, non_neg_integer) :: padding_return
+  defp pad_input(input, kernel, :valid, stride) do
     row_offset = ceil((kernel[:rows] - 1) / 2)
     col_offset = ceil((kernel[:cols] - 1) / 2)
 
@@ -82,11 +82,11 @@ defmodule Convolution do
     {input, {row_offset, col_offset}, {output_rows, output_cols}}
   end
 
-  @spec pad_input(Matrex.t(), Matrex.t(), non_neg_integer, :same) :: padding_return
-  defp pad_input(input, kernel, stride, :same), do: pad_input(input, kernel, stride, :constant, 0)
+  @spec pad_input(Matrex.t(), Matrex.t(), :same,  non_neg_integer) :: padding_return
+  defp pad_input(input, kernel, :same, stride), do: pad_input(input, kernel, :constant, stride, 0)
 
-  @spec pad_input(Matrex.t(), Matrex.t(), non_neg_integer, :constant, number) :: padding_return
-  defp pad_input(input, kernel, stride, :constant, value) do
+  @spec pad_input(Matrex.t(), Matrex.t(), :constant,  non_neg_integer, number) :: padding_return
+  defp pad_input(input, kernel, :constant, stride, value) do
     input_padded = Padding.constant(input, kernel, stride, value)
 
     row_offset = Padding.num_pad_rows(input, kernel, 1)
