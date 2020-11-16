@@ -1,4 +1,4 @@
-defmodule Convolution do
+defmodule Operations do
   @moduledoc """
   Module for handling convolution of two 2d matrices.
   """
@@ -109,7 +109,6 @@ defmodule Convolution do
 
     {input, {row_offset, col_offset}, {output_rows, output_cols}}
   end
-
 
   @spec pad_input(Matrex.t(), Matrex.t(), :constant,  non_neg_integer, number) :: padding_return
   defp pad_input(input, kernel, :constant, stride, value) do
