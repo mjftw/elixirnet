@@ -27,7 +27,7 @@ defmodule Convolution do
   @spec convolve(Matrex.t(), Matrex.t(), conv_method) :: Matrex.t()
   def convolve(input, kernel, method) do
     {input_padded, {row_offset, col_offset}, {output_rows, output_cols}} =
-      pad_input(input, kernel, method)
+      pad_input(input, kernel, 1, method)
 
     # Slide a kernel sized window over the input matrix and perform dot product
     # between the windowed matrix section and the convolution kernel at each location.
@@ -50,8 +50,8 @@ defmodule Convolution do
   """
   @type padding_return :: {Matrex.t(), {non_neg_integer, non_neg_integer}, {non_neg_integer, non_neg_integer}}
 
-  @spec pad_input(Matrex.t(), Matrex.t(), :valid) :: padding_return
-  defp pad_input(input, kernel, :valid) do
+  @spec pad_input(Matrex.t(), Matrex.t(), non_neg_integer, :valid) :: padding_return
+  defp pad_input(input, kernel, stride, :valid) do
     row_offset = ceil((kernel[:rows] - 1) / 2) - 1
     col_offset = ceil((kernel[:cols] - 1) / 2) - 1
 
@@ -61,12 +61,12 @@ defmodule Convolution do
     {input, {row_offset, col_offset}, {output_rows, output_cols}}
   end
 
-  @spec pad_input(Matrex.t(), Matrex.t(), :same) :: padding_return
-  defp pad_input(input, kernel, :same), do: pad_input(input, kernel, :constant, 0)
+  @spec pad_input(Matrex.t(), Matrex.t(), non_neg_integer, :same) :: padding_return
+  defp pad_input(input, kernel, stride, :same), do: pad_input(input, kernel, stride, :constant, 0)
 
-  @spec pad_input(Matrex.t(), Matrex.t(), :constant, number) :: padding_return
-  defp pad_input(input, kernel, :constant, value) do
-    input_padded = Padding.constant(input, kernel, value)
+  @spec pad_input(Matrex.t(), Matrex.t(), non_neg_integer, :constant, number) :: padding_return
+  defp pad_input(input, kernel, stride, :constant, value) do
+    input_padded = Padding.constant(input, kernel, stride, value)
 
     row_offset = Padding.num_pad_rows(input, kernel, 1) - 1
     col_offset = Padding.num_pad_cols(input, kernel, 1) - 1
